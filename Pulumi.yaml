@@ -1,0 +1,3 @@
+name: ocr-teserat-lambda
+runtime: nodejs
+description: A POC of pulumi lambda and lambda-layer
