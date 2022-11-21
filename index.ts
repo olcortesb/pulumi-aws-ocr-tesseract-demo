@@ -5,6 +5,7 @@ import * as awsx from "@pulumi/awsx";
 // Create an AWS resource (S3 Bucket)
 const bucket = new aws.s3.Bucket("my-bucket");
 
+// Create an AWS rol for lambda
 const iamForLambda = new aws.iam.Role("iamForLambda", {assumeRolePolicy: `{
     "Version": "2012-10-17",
     "Statement": [
@@ -20,6 +21,7 @@ const iamForLambda = new aws.iam.Role("iamForLambda", {assumeRolePolicy: `{
   }
   `});
 
+// Create and layer s3 way
 const lambdaLayerTeserat = new aws.lambda.LayerVersion("lambda_layer", {
     compatibleRuntimes: ["nodejs14.x"],
     s3Bucket: 'pulumi-dev-libs',
@@ -27,18 +29,14 @@ const lambdaLayerTeserat = new aws.lambda.LayerVersion("lambda_layer", {
     layerName: "lambda_layer_tesserat",
 });
 
-// const lambdaLayerAxios = new aws.lambda.LayerVersion("lambda_layer_axios", {
-//   code: new pulumi.asset.FileArchive('layer3.zip'),
-//   layerName: "lambda_layer_axios",
-//   compatibleRuntimes: ["nodejs14.x"],
-// });
-
+// Create layer by zip upload way
 const lambdaLayerFns = new aws.lambda.LayerVersion("lambda_layer_fns", {
   code: new pulumi.asset.FileArchive('layer4.zip'),
   layerName: "lambda_layer_fns",
   compatibleRuntimes: ["nodejs14.x"],
 });
 
+// Create Lambda Functions and asing two layers
 const ocr_lambda = new aws.lambda.Function("ocr_lambda", {
     code: new pulumi.asset.AssetArchive({
         ".": new pulumi.asset.FileArchive("./bin/app"),
